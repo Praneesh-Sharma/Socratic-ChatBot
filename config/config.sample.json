@@ -1,0 +1,17 @@
+{
+    "groq_api_key": "YOUR_API_KEY_HERE",
+    "model": "mixtral-8x7b-32768",
+    "conversation_turns": 6,
+    "topics": [
+      "Prompt Engineering",
+      "Few-shot / One-shot / CoT",
+      "LangChain / LlamaIndex",
+      "Retrieval-Augmented Generation (RAG)",
+      "Hallucinations in LLMs",
+      "Responsible AI",
+      "Agents and Automation",
+      "GenAI Use Cases",
+      "Ethics and Risks"
+    ]
+  }
+  
