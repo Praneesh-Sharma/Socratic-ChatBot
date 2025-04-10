@@ -12,5 +12,3 @@ config = load_config()
 # Usage examples
 GROQ_API_KEY = config["groq_api_key"]
 MODEL_NAME = config["model"]
-TEMPERATURE = config["temperature"]
-TOPICS = config["topics"]
