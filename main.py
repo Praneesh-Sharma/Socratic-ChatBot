@@ -2,6 +2,8 @@ import streamlit as st
 from app.chatbot import SocraticChatManager
 from app.evaluation import ConversationEvaluator
 
+print("🚀 Starting Streamlit App")
+
 # 1. Page setup
 st.set_page_config(page_title="EchoDeepak: Socratic Approach", layout="centered")
 st.title("EchoDeepak: Socratic Approach")
