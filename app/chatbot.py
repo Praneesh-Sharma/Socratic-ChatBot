@@ -1,3 +1,4 @@
+import streamlit as st
 from config.settings import GROQ_API_KEY, MODEL_NAME
 from langchain_groq import ChatGroq
 
@@ -29,8 +30,8 @@ class SocraticChatManager:
         self.history = []  # List of dicts: {"user": ..., "bot": ...}
         self.turn = 0
         self.llm = ChatGroq(
-            api_key=GROQ_API_KEY,
-            model_name=MODEL_NAME
+            api_key=st.secrets["GROQ_API_KEY"],
+            model_name=st.secrets["MODEL_NAME"]
         )
         self.system_prompt = get_system_prompt(topic)
 
