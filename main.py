@@ -43,36 +43,41 @@ if st.button("Start Conversation"):
 if st.session_state.conversation_active:
     st.markdown("### Conversation")
 
-    # Previous turns
+    # Show previous turns
     for turn in st.session_state.chatbot.get_conversation_turns():
-        if turn['user']:  # Only show user input if it exists
+        if turn['user']:
             st.markdown(f"**You:** {turn['user']}")
-        st.markdown("---")  # Visual separator
+        st.markdown("---")
         st.markdown(f"**EchoDeepak:** {turn['bot']}")
 
-    # User input
-    user_input = st.text_input("Your response:", key="user_input")
+    # Check if conversation is finished
+    if st.session_state.chatbot.is_finished():
+        st.success(" The conversation is complete. EchoDeepak has no further questions.")
+        st.markdown("Have a look at your **evaluation summary below** 👇")
 
-    if user_input:
-        bot_reply = st.session_state.chatbot.user_reply(user_input)
+        if not st.session_state.evaluation_result:
+            evaluator = ConversationEvaluator()
+            convo_text = st.session_state.chatbot.get_full_conversation()
+            st.session_state.evaluation_result = evaluator.evaluate(convo_text)
+            st.rerun()
 
-        # Display current turn immediately
-        st.markdown(f"**You:** {user_input}")
-        st.markdown("---")
-        st.markdown(f"**EchoDeepak:** {bot_reply}")
+    else:
+        # Only show input if conversation still active
+        user_input = st.text_input("Your response:", key="user_input")
 
-        st.session_state.pop("user_input", None)  # Clear input safely
-        st.rerun()
+        if user_input.strip():  # Avoid blank submits
+            bot_reply = st.session_state.chatbot.user_reply(user_input)
 
-    # Trigger evaluation after last turn
-    if st.session_state.chatbot.is_finished() and not st.session_state.evaluation_result:
-        st.success("Conversation complete! Evaluating your responses...")
-        evaluator = ConversationEvaluator()
-        convo_text = st.session_state.chatbot.get_full_conversation()
-        st.session_state.evaluation_result = evaluator.evaluate(convo_text)
-        st.rerun()
+            # Display current turn immediately
+            st.markdown(f"**You:** {user_input}")
+            st.markdown("---")
+            st.markdown(f"**EchoDeepak:** {bot_reply}")
 
-    # Display evaluation
-    if st.session_state.evaluation_result:
-        st.markdown("### Evaluation Summary")
-        st.markdown(st.session_state.evaluation_result)
+            # Clear input manually to prevent stale value
+            del st.session_state["user_input"]
+            st.rerun()
+
+# Show evaluation at the bottom (after rerun completes)
+if st.session_state.evaluation_result:
+    st.markdown("### Evaluation Summary")
+    st.markdown(st.session_state.evaluation_result)
