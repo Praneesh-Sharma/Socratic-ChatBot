@@ -64,11 +64,8 @@ SOCRATIC-CHATBOT/
 │   ├── chatbot.py
 │   └── evaluation.py
 │
-├── config/
-│   ├── __pycache__/
-│   ├── config.json
-│   ├── config.sample.json
-│   └── settings.py
+├── .streamlit/
+│   ├── secrets.toml
 │
 ├── venv/
 │   └── ... (virtual environment files)
