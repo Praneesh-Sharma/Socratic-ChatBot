@@ -1,11 +1,11 @@
-import streamlit as st
+import os
 from langchain_groq import ChatGroq
 
 class ConversationEvaluator:
     def __init__(self):
         self.llm = ChatGroq(
-            api_key=st.secrets["GROQ_API_KEY"],
-            model_name=st.secrets["MODEL_NAME"]
+            api_key=os.environ.get("GROQ_API_KEY"),
+            model_name=os.environ.get("MODEL_NAME", "llama3-8b-8192")
             )
 
     def evaluate(self, conversation: str) -> str:
