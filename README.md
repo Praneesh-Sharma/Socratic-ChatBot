@@ -83,5 +83,5 @@ To use the app, create a `.streamlit/secrets.toml` file in the project root with
 
 ```toml
 GROQ_API_KEY = "your-groq-api-key-here"
-MODEL_NAME = "mixtral-8x7b-32768"
+MODEL_NAME = "llama3-8b-8192"
 ```
