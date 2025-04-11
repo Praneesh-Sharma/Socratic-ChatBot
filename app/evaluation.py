@@ -1,5 +1,4 @@
 import streamlit as st
-from config.settings import GROQ_API_KEY, MODEL_NAME
 from langchain_groq import ChatGroq
 
 class ConversationEvaluator:
