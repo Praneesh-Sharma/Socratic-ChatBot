@@ -3,27 +3,34 @@ from langchain_groq import ChatGroq
 
 class ConversationEvaluator:
     def __init__(self):
-        self.llm = ChatGroq(
-            api_key=GROQ_API_KEY,
-            model_name=MODEL_NAME
-        )
+        self.llm = ChatGroq(api_key=GROQ_API_KEY, model_name=MODEL_NAME)
 
-    def evaluate(self, topic: str, full_conversation: str) -> str:
-        system_prompt = f"""
-You are an expert Socratic mentor tasked with evaluating a student's conversational performance on the topic: {topic}.
+    def evaluate(self, conversation: str) -> str:
+        prompt = f"""
+            You are an expert Socratic evaluator for Generative AI education.
 
-Your job is to reflect on their responses and provide:
-- A brief summary of their understanding (clarity, misconceptions)
-- Strengths in their reasoning or critical thinking
-- Suggestions for deeper reflection or learning
+            Evaluate the following conversation between a Socratic mentor (EchoDeepak) and a student. Use the criteria below to assess the quality of the student’s responses. For each, give a score from 1 to 5 and a short, constructive comment.
 
-Use a kind, constructive tone. Keep the response under 150 words.
-"""
+            Evaluation Criteria:
+            - **Clarity**: Was the student's explanation easy to follow and coherent?
+            - **Depth**: Did they go beyond surface-level definitions to explore reasoning, implications, or challenges?
+            - **Application**: Did they connect the concept to a real-world use case or startup scenario?
+            - **Critical Thinking**: Did they reflect on assumptions, limitations, or offer counterpoints?
+            - **Progression**: Did their understanding deepen as the conversation evolved?
+            - **Relevance**: Did they remain on-topic and avoid fluff?
+            - **Creativity**: Did they provide a fresh, original, or unique view?
 
-        messages = [
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": full_conversation}
-        ]
+            Conversation:
+            {conversation}
 
-        response = self.llm.invoke(messages).content
-        return response
+            Respond with your feedback in the following format:
+
+            Clarity: [score]/5 - [comment]  
+            Depth: [score]/5 - [comment]  
+            Application: [score]/5 - [comment]  
+            Critical Thinking: [score]/5 - [comment]  
+            Progression: [score]/5 - [comment]  
+            Relevance: [score]/5 - [comment]  
+            Creativity: [score]/5 - [comment]
+            """
+        return self.llm.invoke(prompt).content

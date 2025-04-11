@@ -1,9 +1,10 @@
 import streamlit as st
 from app.chatbot import SocraticChatManager
+from app.evaluation import ConversationEvaluator
 
 # 1. Page setup
-st.set_page_config(page_title="EchoDeepak: Socratic Mentor", layout="centered")
-st.title("EchoDeepak: Socratic GenAI Mentor")
+st.set_page_config(page_title="EchoDeepak: Socratic Approach", layout="centered")
+st.title("EchoDeepak: Socratic Approach")
 
 # 2. Topic selection
 topics = [
@@ -18,32 +19,34 @@ topics = [
     "Ethics and Risks"
 ]
 
+# 3. Session state initialization
 if "chatbot" not in st.session_state:
     st.session_state.chatbot = None
 if "conversation_active" not in st.session_state:
     st.session_state.conversation_active = False
 if "bot_intro" not in st.session_state:
     st.session_state.bot_intro = ""
+if "evaluation_result" not in st.session_state:
+    st.session_state.evaluation_result = None
 
+# 4. Topic selection
 selected_topic = st.selectbox("Select a Generative AI topic to explore:", topics)
 
-# 3. Start conversation only on button click
+# 5. Start conversation
 if st.button("Start Conversation"):
     st.session_state.chatbot = SocraticChatManager(topic=selected_topic)
     st.session_state.conversation_active = True
     st.session_state.bot_intro = st.session_state.chatbot.bot_start()
+    st.session_state.evaluation_result = None  # Reset previous eval
 
-# 4. Conversation flow
+# 6. Conversation flow
 if st.session_state.conversation_active:
     st.markdown("### Conversation")
 
-    # Show the first Socratic question (intro)
-    if st.session_state.bot_intro and st.session_state.chatbot.turn == 1:
-        st.markdown(f"**EchoDeepak:** {st.session_state.bot_intro}")
-
-    # Show previous turns (if any)
+    # Previous turns
     for turn in st.session_state.chatbot.get_conversation_turns():
-        st.markdown(f"**You:** {turn['user']}")
+        if turn['user']:  # Only show user input if it exists
+            st.markdown(f"**You:** {turn['user']}")
         st.markdown("---")  # Visual separator
         st.markdown(f"**EchoDeepak:** {turn['bot']}")
 
@@ -53,16 +56,23 @@ if st.session_state.conversation_active:
     if user_input:
         bot_reply = st.session_state.chatbot.user_reply(user_input)
 
-        # Display the current interaction
+        # Display current turn immediately
         st.markdown(f"**You:** {user_input}")
+        st.markdown("---")
         st.markdown(f"**EchoDeepak:** {bot_reply}")
 
-        # Safely clear the input field
-        st.session_state.pop("user_input", None)
+        st.session_state.pop("user_input", None)  # Clear input safely
         st.rerun()
 
-    if st.session_state.chatbot.is_finished():
-        st.success("Conversation complete. You may now evaluate your responses.")
+    # Trigger evaluation after last turn
+    if st.session_state.chatbot.is_finished() and not st.session_state.evaluation_result:
+        st.success("Conversation complete! Evaluating your responses...")
+        evaluator = ConversationEvaluator()
+        convo_text = st.session_state.chatbot.get_full_conversation()
+        st.session_state.evaluation_result = evaluator.evaluate(convo_text)
+        st.rerun()
 
-    if st.button("Evaluate My Understanding"):
-        st.info("Evaluation feature coming soon...")
+    # Display evaluation
+    if st.session_state.evaluation_result:
+        st.markdown("### Evaluation Summary")
+        st.markdown(st.session_state.evaluation_result)
