@@ -63,14 +63,8 @@ class SocraticChatManager:
         if self.turn == 0:
             self.turn += 1
 
-            # Check if it's a Critical Thinking topic
-            if self.category  == "Critical Thinking":
-                # Dynamically generate a use case related to Critical Thinking
-                self.use_case = self.generate_use_case()
-                bot_msg = self.use_case
-            else:
-                # For other topics, continue with the usual Socratic questioning
-                bot_msg = f"Let's begin our exploration of {self.topic}. What comes to your mind when you hear this topic?"
+            self.use_case = self.generate_use_case()
+            bot_msg = self.use_case
             
             self.history.append({"user": "", "bot": bot_msg})  # store the first question
             return bot_msg
