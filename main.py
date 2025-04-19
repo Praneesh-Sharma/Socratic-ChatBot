@@ -6,7 +6,7 @@ from app.evaluation import ConversationEvaluator
 st.set_page_config(page_title="EchoDeepak: Socratic Approach", layout="centered")
 st.title("EchoDeepak: Socratic Approach")
 
-# 2. Categories and Topics
+# 2. Categories and Topics (including Critical Thinking)
 categories = {
     "Generative AI": [
         "Prompt Engineering",
@@ -27,6 +27,16 @@ categories = {
         "Handling Feedback and Talking to Seniors",
         "Behavior and Communication in a Company",
         "Owning and Contributing to Projects"
+    ],
+    "Critical Thinking": [
+        "Data Abstraction",
+        "Model Testing",
+        "Data Cleaning",
+        "Validation",
+        "Data Transformation",
+        "Model Deployment",
+        "Data Integration",
+        "Feature Engineering"
     ]
 }
 
@@ -48,7 +58,12 @@ selected_topic = st.selectbox("Now choose a topic:", categories[selected_categor
 
 # 6. Start conversation
 if st.button("Start Conversation"):
-    st.session_state.chatbot = SocraticChatManager(topic=selected_topic)
+    # For Critical Thinking, we handle it a bit differently
+    if selected_category == "Critical Thinking":
+        st.session_state.chatbot = SocraticChatManager(topic="Critical Thinking")
+    else:
+        st.session_state.chatbot = SocraticChatManager(topic=selected_topic)
+        
     st.session_state.conversation_active = True
     st.session_state.bot_intro = st.session_state.chatbot.bot_start()
     st.session_state.evaluation_result = None  # Reset previous eval
