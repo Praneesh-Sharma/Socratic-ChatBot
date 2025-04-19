@@ -51,10 +51,10 @@ if "evaluation_result" not in st.session_state:
     st.session_state.evaluation_result = None
 
 # 4. Select category first
-selected_category = st.selectbox("Choose a category:", list(categories.keys()))
+selected_category = st.selectbox("Category:", list(categories.keys()))
 
 # 5. Then select topic based on category
-selected_topic = st.selectbox("Now choose a topic:", categories[selected_category])
+selected_topic = st.selectbox("Topic:", categories[selected_category])
 
 # 6. Start conversation
 if st.button("Start Conversation"):
