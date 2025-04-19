@@ -24,8 +24,9 @@ def get_system_prompt(topic: str) -> str:
         """
 
 class SocraticChatManager:
-    def __init__(self, topic: str, max_turns: int = 6, max_use_case_length: int = 500):
+    def __init__(self, topic: str, category: str = None, max_turns: int = 6, max_use_case_length: int = 500):
         self.topic = topic
+        self.category = category
         self.max_turns = max_turns
         self.max_use_case_length = max_use_case_length  # Max length of the generated use case
         self.history = []  # List of dicts: {"user": ..., "bot": ...}
@@ -34,7 +35,7 @@ class SocraticChatManager:
             api_key=st.secrets["GROQ_API_KEY"],
             model_name=st.secrets["MODEL_NAME"]
         )
-        self.system_prompt = get_system_prompt(topic)
+        self.system_prompt = get_system_prompt(self.topic)
         self.use_case = None  # Will store the hypothetical use case for Critical Thinking topics
 
     def _format_chat(self):
@@ -45,17 +46,17 @@ class SocraticChatManager:
         return messages
 
     def generate_use_case(self) -> str:
-        # Generate a dynamic use case for Critical Thinking
-        prompt = f"Generate a hypothetical scenario where critical thinking is required in data science or AI. The scenario should involve complex decision-making and multiple possible solutions."
-        
+        # Generate a use case based on the selected Critical Thinking subtopic
+        prompt = f"""
+        Generate a brief hypothetical scenario (under 100 words) where critical thinking is essential in the context of "{self.topic}".
+        The scenario should:
+        - Involve real-world decision-making
+        - Highlight multiple possible approaches or trade-offs
+        - Be concise, engaging, and easy to follow
+        Format as a conversation starter. Keep word count to 100
+        """
         messages = [{"role": "system", "content": prompt}]
-        
         response = self.llm.invoke(messages).content.strip()
-
-        # Check the length of the generated use case and truncate if necessary
-        if len(response) > self.max_use_case_length:
-            response = response[:self.max_use_case_length] + "..."
-        
         return response
 
     def bot_start(self) -> str:
@@ -63,7 +64,7 @@ class SocraticChatManager:
             self.turn += 1
 
             # Check if it's a Critical Thinking topic
-            if self.topic == "Critical Thinking":
+            if self.category  == "Critical Thinking":
                 # Dynamically generate a use case related to Critical Thinking
                 self.use_case = self.generate_use_case()
                 bot_msg = f"{self.use_case}\n\nWhat would be your approach to tackle this problem?"

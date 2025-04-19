@@ -60,7 +60,7 @@ selected_topic = st.selectbox("Now choose a topic:", categories[selected_categor
 if st.button("Start Conversation"):
     # For Critical Thinking, we handle it a bit differently
     if selected_category == "Critical Thinking":
-        st.session_state.chatbot = SocraticChatManager(topic="Critical Thinking")
+        st.session_state.chatbot = SocraticChatManager(topic=selected_topic, category=selected_category)
     else:
         st.session_state.chatbot = SocraticChatManager(topic=selected_topic)
         
