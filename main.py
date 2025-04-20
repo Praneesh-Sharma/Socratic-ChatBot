@@ -62,6 +62,8 @@ else:
         st.session_state.bot_intro = ""
     if "evaluation_result" not in st.session_state:
         st.session_state.evaluation_result = None
+    if "conversation_saved" not in st.session_state:
+        st.session_state.conversation_saved = False
 
     # 4. Select category first
     selected_category = st.selectbox("Choose a category:", list(categories.keys()))
@@ -79,7 +81,8 @@ else:
 
         st.session_state.conversation_active = True
         st.session_state.bot_intro = st.session_state.chatbot.bot_start()
-        st.session_state.evaluation_result = None  # Reset previous eval
+        st.session_state.evaluation_result = None
+        st.session_state.conversation_saved = False
 
     # 7. Conversation flow
     if st.session_state.conversation_active:
@@ -123,3 +126,22 @@ else:
     if st.session_state.evaluation_result:
         st.markdown("### Evaluation Summary")
         st.markdown(st.session_state.evaluation_result)
+
+        if not st.session_state.conversation_saved:
+            conversation_data = {
+                "turns": st.session_state.chatbot.get_conversation_turns(),
+                "topic": selected_topic,
+                "category": selected_category,
+                "evaluation": st.session_state.evaluation_result
+            }
+            
+            # Update the save_conversation call to pass all required arguments
+            save_conversation(
+                user_id=st.session_state.user,
+                selected_topic=selected_topic,
+                selected_category=selected_category,
+                evaluation_result=st.session_state.evaluation_result
+            )
+            
+            st.session_state.conversation_saved = True
+
