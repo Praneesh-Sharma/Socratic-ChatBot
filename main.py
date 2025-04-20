@@ -3,6 +3,7 @@ from app.chatbot import SocraticChatManager
 from app.evaluation import ConversationEvaluator
 from app.login import login
 from app.database import save_conversation
+import time  # For the timer
 
 # 1. Check if the user is logged in
 if "logged_in" not in st.session_state:
@@ -64,6 +65,10 @@ else:
         st.session_state.evaluation_result = None
     if "conversation_saved" not in st.session_state:
         st.session_state.conversation_saved = False
+    if "start_time" not in st.session_state:
+        st.session_state.start_time = None  # To store the start time
+    if "end_time" not in st.session_state:
+        st.session_state.end_time = None  # To store the end time
 
     # 4. Select category first
     selected_category = st.selectbox("Choose a category:", list(categories.keys()))
@@ -84,8 +89,18 @@ else:
         st.session_state.evaluation_result = None
         st.session_state.conversation_saved = False
 
+        # Start the timer
+        st.session_state.start_time = time.time()
+
     # 7. Conversation flow
     if st.session_state.conversation_active:
+        # Calculate elapsed time
+        elapsed_time = time.time() - st.session_state.start_time
+
+        # Display the timer in the sidebar so it stays visible
+        with st.sidebar:
+            st.markdown(f"**Time Elapsed:** {elapsed_time:.2f} seconds")
+
         st.markdown("### Conversation")
 
         # Show previous turns
@@ -118,6 +133,31 @@ else:
                 evaluator = ConversationEvaluator()
                 convo_text = st.session_state.chatbot.get_full_conversation()
                 st.session_state.evaluation_result = evaluator.evaluate(convo_text)
+
+                # End the timer when evaluation is clicked
+                st.session_state.end_time = time.time()
+
+                # Calculate the duration
+                elapsed_time = st.session_state.end_time - st.session_state.start_time
+                st.session_state.duration = elapsed_time  # Store the duration
+
+                # Save the conversation along with the time to MongoDB
+                conversation_data = {
+                    "turns": st.session_state.chatbot.get_conversation_turns(),
+                    "topic": selected_topic,
+                    "category": selected_category,
+                    "evaluation": st.session_state.evaluation_result,
+                    "duration": st.session_state.duration  # Add duration here
+                }
+
+                save_conversation(
+                    user_id=st.session_state.user,
+                    selected_topic=selected_topic,
+                    selected_category=selected_category,
+                    evaluation_result=st.session_state.evaluation_result,
+                    duration=st.session_state.duration  # Pass duration to MongoDB
+                )
+
                 st.rerun()
 
     # 9. Evaluation Display
@@ -125,20 +165,26 @@ else:
         st.markdown("### Evaluation Summary")
         st.markdown(st.session_state.evaluation_result)
 
+        # Display the duration of the conversation after evaluation
+        st.markdown("### Time Taken")
+        st.markdown(f"**Time Taken:** {st.session_state.duration:.2f} seconds")
+
         if not st.session_state.conversation_saved:
             conversation_data = {
                 "turns": st.session_state.chatbot.get_conversation_turns(),
                 "topic": selected_topic,
                 "category": selected_category,
-                "evaluation": st.session_state.evaluation_result
+                "evaluation": st.session_state.evaluation_result,
+                "duration": st.session_state.duration  # Store duration
             }
 
-            # Save conversation data
+            # Update save_conversation call to include duration
             save_conversation(
                 user_id=st.session_state.user,
                 selected_topic=selected_topic,
                 selected_category=selected_category,
-                evaluation_result=st.session_state.evaluation_result
+                evaluation_result=st.session_state.evaluation_result,
+                duration=st.session_state.duration  # Store duration in DB
             )
 
             st.session_state.conversation_saved = True
