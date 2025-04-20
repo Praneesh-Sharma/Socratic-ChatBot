@@ -21,16 +21,14 @@ def get_system_prompt(topic: str) -> str:
         
         If the user starts to drift off-topic, gently steer them back to the topic of {topic}.
         If the user provides a vague or unclear response, ask them to clarify or elaborate.
-        """
+    """
 
 class SocraticChatManager:
-    def __init__(self, topic: str, category: str = None, max_turns: int = 6, max_use_case_length: int = 500):
+    def __init__(self, topic: str, category: str = None, max_use_case_length: int = 500):
         self.topic = topic
         self.category = category
-        self.max_turns = max_turns
         self.max_use_case_length = max_use_case_length  # Max length of the generated use case
         self.history = []  # List of dicts: {"user": ..., "bot": ...}
-        self.turn = 0
         self.llm = ChatGroq(
             api_key=st.secrets["GROQ_API_KEY"],
             model_name=st.secrets["MODEL_NAME"]
@@ -46,7 +44,6 @@ class SocraticChatManager:
         return messages
 
     def generate_use_case(self) -> str:
-        # Generate a use case based on the selected Critical Thinking subtopic
         prompt = f"""
         Generate a brief hypothetical scenario (under 100 words) where critical thinking is essential in the context of "{self.topic}".
         The scenario should:
@@ -60,30 +57,19 @@ class SocraticChatManager:
         return response
 
     def bot_start(self) -> str:
-        if self.turn == 0:
-            self.turn += 1
-
+        if not self.history:
             self.use_case = self.generate_use_case()
             bot_msg = self.use_case
-            
             self.history.append({"user": "", "bot": bot_msg})  # store the first question
             return bot_msg
         return ""
 
     def user_reply(self, user_input: str) -> str:
-        if self.turn >= self.max_turns:
-            return "This concludes our discussion. You can now review your responses."
-
         messages = self._format_chat()
         messages.append({"role": "user", "content": user_input})
-
         response = self.llm.invoke(messages).content.strip()
         self.history.append({"user": user_input, "bot": response})
-        self.turn += 1
         return response
-
-    def is_finished(self) -> bool:
-        return self.turn >= self.max_turns
 
     def get_full_conversation(self) -> str:
         return "\n\n".join(

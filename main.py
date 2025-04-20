@@ -95,34 +95,32 @@ else:
             st.markdown("---")
             st.markdown(f"**EchoDeepak:** {turn['bot']}")
 
-        # Check if conversation is finished
-        if st.session_state.chatbot.is_finished():
-            st.success("The conversation is complete. EchoDeepak has no further questions.")
-            st.markdown("Have a look at your **evaluation summary below** 👇")
+        # Display text input field
+        user_input = st.text_area("Your response:", key="user_input", height=100)
 
+        # Display 'Next' button for conversation progression
+        if st.button("Next") and user_input.strip():
+            bot_reply = st.session_state.chatbot.user_reply(user_input)
+
+            # Display current turn immediately
+            st.markdown(f"**You:** {user_input}")
+            st.markdown("---")
+            st.markdown(f"**EchoDeepak:** {bot_reply}")
+
+            # Clear input manually
+            del st.session_state["user_input"]
+            st.rerun()
+
+    # 8. Evaluation Button
+    if st.session_state.conversation_active and len(st.session_state.chatbot.get_conversation_turns()) > 0:
+        if st.button("Evaluate my responses"):
             if not st.session_state.evaluation_result:
                 evaluator = ConversationEvaluator()
                 convo_text = st.session_state.chatbot.get_full_conversation()
                 st.session_state.evaluation_result = evaluator.evaluate(convo_text)
                 st.rerun()
 
-        else:
-            # Only show input if conversation still active
-            user_input = st.text_area("Your response:", key="user_input", height=100)
-
-            if user_input.strip():
-                bot_reply = st.session_state.chatbot.user_reply(user_input)
-
-                # Display current turn immediately
-                st.markdown(f"**You:** {user_input}")
-                st.markdown("---")
-                st.markdown(f"**EchoDeepak:** {bot_reply}")
-
-                # Clear input manually
-                del st.session_state["user_input"]
-                st.rerun()
-
-    # 8. Evaluation
+    # 9. Evaluation Display
     if st.session_state.evaluation_result:
         st.markdown("### Evaluation Summary")
         st.markdown(st.session_state.evaluation_result)
@@ -134,14 +132,13 @@ else:
                 "category": selected_category,
                 "evaluation": st.session_state.evaluation_result
             }
-            
-            # Update the save_conversation call to pass all required arguments
+
+            # Save conversation data
             save_conversation(
                 user_id=st.session_state.user,
                 selected_topic=selected_topic,
                 selected_category=selected_category,
                 evaluation_result=st.session_state.evaluation_result
             )
-            
-            st.session_state.conversation_saved = True
 
+            st.session_state.conversation_saved = True
