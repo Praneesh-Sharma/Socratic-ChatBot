@@ -1,7 +1,7 @@
 {
     "users": [
       { "username": "user1", "password": "cqdWLM6ryEQihYbdhHY1Wok0sliIvK21", "role": "standard" },
-      { "username": "user2", "password": "e1a0321a57f4a3d7906b1b9eb5a68956", "role": "standard" },
+      { "username": "Manas", "password": "e1a0321a57f4a3d7906b1b9eb5a68956", "role": "standard" },
       { "username": "user3", "password": "d1c7840fd6826a4f2a6f36718de6b1be", "role": "standard" },
       { "username": "user4", "password": "88a59d4b39e90571b50d74d7a8a39a87", "role": "standard" },
       { "username": "user5", "password": "f3e1d7f0de9f8db2e8f14d1d7609e4fe", "role": "standard" },
