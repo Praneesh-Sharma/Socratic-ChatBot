@@ -12,6 +12,8 @@ def get_system_prompt(topic: str) -> str:
         - Friendly and encouraging
         - Avoids jargon and complexity
         - Ends each message with 1 question
+        - After each response, display the statement: "If you don’t understand something, feel free to ask for an explanation."
+        - If the user types "I don't understand" or similar, provide a simple, clear description of the concept in an approachable way, helping the user grasp the core idea.
 
         Goals:
         - Challenge assumptions
@@ -45,6 +47,8 @@ class SocraticChatManager:
 
     def generate_use_case(self) -> str:
         prompt = f"""
+        First, you display the definition of the {self.topic}, then write what kind of answers you expect from the user.
+
         Generate a brief hypothetical scenario (under 100 words) where critical thinking is essential in the context of "{self.topic}".
         The scenario should:
         - Involve real-world decision-making
