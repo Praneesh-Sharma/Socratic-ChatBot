@@ -4,6 +4,7 @@ from app.evaluation import ConversationEvaluator
 from app.login import login
 from app.database import save_conversation
 import time  # For the timer
+from app.leetprompt import LeetPromptSocraticChatManager
 
 # 1. Check if the user is logged in
 if "logged_in" not in st.session_state:
@@ -51,6 +52,13 @@ else:
             "Model Deployment",
             "Data Integration",
             "Feature Engineering"
+        ],
+        "LeetPrompt": [
+            "Zero-Shot Basic Conversation",
+            "One-Shot Simple Query",
+            "Few-Shot Greeting Variations",
+            "Zero-Shot Open Ended Question",
+            "One-Shot Fact-Based Query",
         ]
     }
 
@@ -81,6 +89,8 @@ else:
         # For Critical Thinking, we handle it a bit differently
         if selected_category == "Critical Thinking":
             st.session_state.chatbot = SocraticChatManager(topic="Critical Thinking", category=selected_category)
+        elif selected_category == "LeetPrompt":
+            st.session_state.chatbot = LeetPromptSocraticChatManager(category=selected_category, topic=selected_topic)
         else:
             st.session_state.chatbot = SocraticChatManager(topic=selected_topic)
 
