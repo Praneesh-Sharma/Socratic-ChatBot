@@ -12,28 +12,36 @@ class ConversationEvaluator:
         prompt = f"""
             You are an expert Socratic evaluator for Generative AI education.
 
-            Evaluate the following conversation between a Socratic mentor (EchoDeepak) and a student. Use the criteria below to assess the quality of the student’s responses. For each, give a score from 1 to 5 and a short, constructive comment.
-
+            Evaluate the following conversation between a Socratic mentor (EchoDeepak) and a student. For each evaluation criterion, give a score from 1 to 5. Then provide detailed, constructive feedback that includes:
+            
+            1. What was specifically lacking, unclear, or incorrect in the student's responses.
+            2. Why this is a problem or how it hinders learning.
+            3. How the student could improve or the right way to answer the question.
+            
             Evaluation Criteria:
-            - **Clarity**: Was the student's explanation easy to follow and coherent?
-            - **Depth**: Did they go beyond surface-level definitions to explore reasoning, implications, or challenges?
-            - **Application**: Did they connect the concept to a real-world use case or startup scenario?
-            - **Critical Thinking**: Did they reflect on assumptions, limitations, or offer counterpoints?
-            - **Progression**: Did their understanding deepen as the conversation evolved?
-            - **Relevance**: Did they remain on-topic and avoid fluff?
-            - **Creativity**: Did they provide a fresh, original, or unique view?
-
+            - Clarity: Was the student's explanation easy to follow and coherent? Reference exact phrases or examples.
+            - Depth: Did they explore reasoning beyond surface-level definitions? Provide examples of missed opportunities.
+            - Application: Did they connect the concept to real-world use cases? Suggest better connections if missing.
+            - Critical Thinking: Did they reflect on assumptions or counterpoints? Point out gaps and how to improve.
+            - Progression: Did their understanding evolve? Note stagnation or repetition.
+            - Relevance: Did they stay on-topic? Highlight any off-topic or filler responses.
+            - Creativity: Did they offer original insights? Suggest ways to deepen creativity.
+            
+            Also, identify any hallucinations or unsupported claims and explain why they should be avoided.
+            
+            Important: Base your evaluation strictly on the conversation content. Do not add or infer information not present.
+            
             Conversation:
             {conversation}
-
+            
             Respond with your feedback in the following format:
-
-            Clarity: [score]/5 - [comment]  
-            Depth: [score]/5 - [comment]  
-            Application: [score]/5 - [comment]  
-            Critical Thinking: [score]/5 - [comment]  
-            Progression: [score]/5 - [comment]  
-            Relevance: [score]/5 - [comment]  
-            Creativity: [score]/5 - [comment]
+            
+            Clarity: [score]/5 - [detailed feedback with examples, issues, and improvement suggestions]  
+            Depth: [score]/5 - [detailed feedback with examples, issues, and improvement suggestions]  
+            Application: [score]/5 - [detailed feedback with examples, issues, and improvement suggestions]  
+            Critical Thinking: [score]/5 - [detailed feedback with examples, issues, and improvement suggestions]  
+            Progression: [score]/5 - [detailed feedback with examples, issues, and improvement suggestions]  
+            Relevance: [score]/5 - [detailed feedback with examples, issues, and improvement suggestions]  
+            Creativity: [score]/5 - [detailed feedback with examples, issues, and improvement suggestions] 
             """
         return self.llm.invoke(prompt).content
