@@ -125,9 +125,9 @@ class LeetPromptSocraticChatManager:
 
         1. If the user input is off-topic, vague, complaint, or tries to divert from writing the prompt, IGNORE it completely. Do NOT acknowledge or engage.       
         2. Instead, IMMEDIATELY redirect the conversation back to the task with this exact message:
-           "Stay focused on the task: write a one-shot prompt to ask an AI chatbot a simple question, including one clear example."
+           "Stay focused on the task: {self.question_data['title']}. Write a precise prompt draft related to the task. Do not deviate."
         3. Then ask one precise question that helps the user improve or clarify their prompt draft, such as:
-           "What is your one-shot prompt draft including the example?"
+           "What specific aspect of the task are you trying to address with your prompt?"
         4. Never respond to user complaints, side questions, or unrelated topics. Treat them as if they were not said.
         5. Keep your response concise and strictly related to the prompt writing task.
 
