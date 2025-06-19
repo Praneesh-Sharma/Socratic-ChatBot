@@ -6,7 +6,6 @@ import uuid
 from app.chatbot import SocraticChatManager
 from app.leetprompt import LeetPromptSocraticChatManager
 from app.evaluation import ConversationEvaluator
-from app.database import save_conversation
 
 router = APIRouter()
 
