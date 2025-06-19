@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # 🤖 Socratic Chatbot for Generative AI
 
 This is a Streamlit-based interactive chatbot that guides users through key concepts in Generative AI using the Socratic method. Instead of providing direct answers, the bot asks thought-provoking questions to deepen your understanding and critical thinking.
@@ -86,6 +85,3 @@ To use the app, create a `.streamlit/secrets.toml` file in the project root with
 GROQ_API_KEY = "your-groq-api-key-here"
 MODEL_NAME = "llama3-8b-8192"
 ```
-=======
-# ai_agents
->>>>>>> 8df8dd58fef50687e0727d00ed2402bdc38382d1
