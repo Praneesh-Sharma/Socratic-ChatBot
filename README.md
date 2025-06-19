@@ -3,7 +3,6 @@
 This is a Streamlit-based interactive chatbot that guides users through key concepts in Generative AI using the Socratic method. Instead of providing direct answers, the bot asks thought-provoking questions to deepen your understanding and critical thinking.
 
 
-
 ## 🚀 Features
 
 - 🧠 **Topic-based Socratic Dialogue**  
