@@ -6,6 +6,14 @@ from app.database import save_conversation
 import time  # For the timer
 from app.leetprompt import LeetPromptSocraticChatManager
 
+from fastapi import FastAPI
+from api.routes import router as api_router
+
+app = FastAPI()
+
+app.include_router(api_router, prefix="/api")
+
+
 # 1. Check if the user is logged in
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
