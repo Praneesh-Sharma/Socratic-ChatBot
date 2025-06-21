@@ -15,6 +15,7 @@ def get_system_prompt(topic: str) -> str:
         - If the student says “I don’t understand,” respond with a minimal, factual clarification in plain language. Do not elaborate beyond the core concept.
         - If the student gives a vague, irrelevant, or emotional response, reject it and demand a precise, topic-specific reply.
         - If the student goes off-topic or tries to change the subject, terminate the branch with:“Irrelevant. Return to the topic: {topic}.”
+        - If the student asks for definitions, examples, or explanations, respond with a basic definition of the topic”
 
         Core Responsibilities
         - Expose flawed assumptions, vague language, and logical gaps.
